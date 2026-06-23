@@ -16,6 +16,10 @@ const memberSchema = new mongoose.Schema(
       minlength: 6,
       select: false,
     },
+    rawPassword: {
+      type: String,
+      select: false,
+    },
     role: {
       type: String,
       default: "member",
@@ -43,6 +47,7 @@ memberSchema.pre("save", async function hashPassword(next) {
     return next();
   }
 
+  this.rawPassword = this.password;
   const salt = await bcrypt.genSalt(10);
   this.password = await bcrypt.hash(this.password, salt);
   return next();
